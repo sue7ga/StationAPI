@@ -76,20 +76,37 @@ class Station
 end
 
 class Group
+ 
+  def initialize(stationcode = 1130224)
+   @groupcode = stationcode
+  end
+  
+  def groupcode
+   @groupcode
+  end
+
+  def show
+   @groupcode = self.groupcode
+   uri = URI.parse("http://www.ekidata.jp/api/g/" + "#{@groupcode}" + ".json") 
+   json =  Net::HTTP.get(uri)
+   json =  json.gsub(/xml.data = /,"")
+   json =  json.gsub(/if\(typeof\(xml.onload\)=='function'\) xml.onload\(xml.data\);/,"")
+   json =  json.gsub(/if\(typeof\(xml\)=='undefined'\) xml = {};/,"")
+   result = JSON.parse(json)
+   return result
+  end
 
 end
 
-station = Station.new
-station = station.show
+group = Group.new
 
-line =  station['station']
+group =  group.show
 
-line.each{
- |line|
- puts line['line_name']
+group =  group['station_g']
+
+group.each{
+  |group|
+  puts group['line_name']
 }
-
-
-
 
 
