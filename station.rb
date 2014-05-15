@@ -2,10 +2,19 @@ require 'net/http'
 require 'uri'
 require 'json'
 
-module JSON 
+module URL
+ def url(uri) 
+  json = Net::HTTP.get(uri)
+  json =  json.gsub(/xml.data = /,"")
+  json =  json.gsub(/if\(typeof\(xml.onload\)=='function'\) xml.onload\(xml.data\);/,"")
+  json =  json.gsub(/if\(typeof\(xml\)=='undefined'\) xml = {};/,"")
+  result = JSON.parse(json)
+  return result
+ end
 end
 
 class Pref
+  include URL
 
   def initialize(prefid = 14)
    @prefid = prefid
@@ -18,17 +27,14 @@ class Pref
   def show
    @prefid = self.prefid
    uri = URI.parse("http://www.ekidata.jp/api/p/" + "#{@prefid}" + ".json")
-   json = Net::HTTP.get(uri)
-   json =  json.gsub(/xml.data = /,"")
-   json =  json.gsub(/if\(typeof\(xml.onload\)=='function'\) xml.onload\(xml.data\);/,"")
-   json =  json.gsub(/if\(typeof\(xml\)=='undefined'\) xml = {};/,"")
-   result = JSON.parse(json)
+   result = url(uri)
    return result
   end
 
 end
 
 class Line
+  include URL
 
   def initialize(linecode = 11302)
     @linecd = linecode
@@ -41,17 +47,14 @@ class Line
   def show 
    @linecd = self.linecd
     uri = URI.parse("http://www.ekidata.jp/api/l/" + "#{@linecd}"+ ".json")
-    json = Net::HTTP.get(uri)
-    json =  json.gsub(/xml.data = /,"")
-    json =  json.gsub(/if\(typeof\(xml.onload\)=='function'\) xml.onload\(xml.data\);/,"")
-    json =  json.gsub(/if\(typeof\(xml\)=='undefined'\) xml = {};/,"")
-    result = JSON.parse(json)
+    result = url(uri)
     return result
   end
 
 end
 
 class Station
+  include URL
 
  def initialize(stationcd = 1130224)
    @stationcode = stationcd
@@ -64,17 +67,14 @@ class Station
  def show
   @stationcode = self.stationcode
   uri = URI.parse("http://www.ekidata.jp/api/s/" + "#{@stationcode}" + ".json")
-  json = Net::HTTP.get(uri)   
-  json =  json.gsub(/xml.data = /,"")
-  json =  json.gsub(/if\(typeof\(xml.onload\)=='function'\) xml.onload\(xml.data\);/,"")
-  json =  json.gsub(/if\(typeof\(xml\)=='undefined'\) xml = {};/,"")
-  result = JSON.parse(json)
+  result = url(uri) 
   return result
  end
 
 end
 
 class Group
+  include URL
  
   def initialize(stationcode = 1130224)
    @groupcode = stationcode
@@ -86,18 +86,15 @@ class Group
 
   def show
    @groupcode = self.groupcode
-   uri = URI.parse("http://www.ekidata.jp/api/g/" + "#{@groupcode}" + ".json") 
-   json =  Net::HTTP.get(uri)
-   json =  json.gsub(/xml.data = /,"")
-   json =  json.gsub(/if\(typeof\(xml.onload\)=='function'\) xml.onload\(xml.data\);/,"")
-   json =  json.gsub(/if\(typeof\(xml\)=='undefined'\) xml = {};/,"")
-   result = JSON.parse(json)
+   uri = URI.parse("http://www.ekidata.jp/api/g/" + "#{@groupcode}" + ".json")
+   result = url(uri)
    return result
   end
 
 end
 
 class Near
+  include URL
 
   def initialize(linecode = 11302)
    @linecode = linecode
@@ -109,12 +106,8 @@ class Near
 
   def show
    @linecode = self.linecode
-    uri = URI.parse("http://www.ekidata.jp/api/n/" + "#{@linecode}" + ".json") 
-   json =  Net::HTTP.get(uri)
-   json =  json.gsub(/xml.data = /,"")
-   json =  json.gsub(/if\(typeof\(xml.onload\)=='function'\) xml.onload\(xml.data\);/,"")
-   json =  json.gsub(/if\(typeof\(xml\)=='undefined'\) xml = {};/,"")
-   result = JSON.parse(json)
+   uri = URI.parse("http://www.ekidata.jp/api/n/" + "#{@linecode}" + ".json")
+   result = url(uri)
    return result  
   end
 
@@ -122,13 +115,16 @@ end
 
 near = Near.new
 
-station = near.show
-station = station['station_join']
+puts near.show
 
-station.each{
-   |station| 
-   puts station['station_name1']
-}
+
+
+
+
+
+
+
+
 
 
 
