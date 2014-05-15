@@ -30,7 +30,6 @@ class Pref
    result = url(uri)
    return result
   end
-
 end
 
 class Line
@@ -114,8 +113,18 @@ class Near
 end
 
 near = Near.new
-
 puts near.show
+
+
+
+
+
+
+
+
+
+
+
 
 
 
