@@ -28,7 +28,16 @@ end
 pref = Pref.new(13)
 station =  pref.show
 
-puts station['line'][2]['line_name']
+line = station['line']
+
+line.each{
+   |line| 
+   puts line['line_cd'],line['line_name'],"\n"
+}
+
+
+
+
 
 
 
