@@ -2,8 +2,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 
-module JSON
- 
+module JSON 
 end
 
 class Pref
@@ -98,15 +97,61 @@ class Group
 
 end
 
-group = Group.new
+class Near
 
-group =  group.show
+  def initialize(linecode = 11302)
+   @linecode = linecode
+  end
+  
+  def linecode
+   @linecode
+  end
 
-group =  group['station_g']
+  def show
+   @linecode = self.linecode
+    uri = URI.parse("http://www.ekidata.jp/api/n/" + "#{@linecode}" + ".json") 
+   json =  Net::HTTP.get(uri)
+   json =  json.gsub(/xml.data = /,"")
+   json =  json.gsub(/if\(typeof\(xml.onload\)=='function'\) xml.onload\(xml.data\);/,"")
+   json =  json.gsub(/if\(typeof\(xml\)=='undefined'\) xml = {};/,"")
+   result = JSON.parse(json)
+   return result  
+  end
 
-group.each{
-  |group|
-  puts group['line_name']
+end
+
+near = Near.new
+
+station = near.show
+station = station['station_join']
+
+station.each{
+   |station| 
+   puts station['station_name1']
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
