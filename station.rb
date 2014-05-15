@@ -16,8 +16,9 @@ class Pref
    @prefid = self.prefid
    uri = URI.parse("http://www.ekidata.jp/api/p/" + "#{@prefid}" + ".json")
    json = Net::HTTP.get(uri)
-   str = json.to_s
-   return str.gsub(/if(typeof(xml.onload)=='function') xml.onload(xml.data);/,'hoge')
+   json =  json.gsub(/xml.data = /,"")
+   json =  json.gsub(/if\(typeof\(xml.onload\)=='function'\) xml.onload\(xml.data\);/,"")
+   json =  json.gsub(/if\(typeof\(xml\)=='undefined'\) xml = {};/,"")
    result = JSON.parse(json)
    return result
   end
@@ -25,7 +26,12 @@ class Pref
 end
 
 pref = Pref.new(13)
-puts pref.show
+station =  pref.show
+
+puts station['line'][2]['line_name']
+
+
+
 
 
 
